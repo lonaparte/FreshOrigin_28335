@@ -157,6 +157,20 @@ void main()
     InitEPwm2Gpio();                     // 将GPIO2 和GPIO3配置为ePWM功能
     InitEPwm3Gpio();                      // 将GPIO4 和GPIO5 配置为ePWM功能，仅触发采样
 
+    //Step 3. 清除所有中断并初始化中断向量表
+    DINT;                                 // 禁用CPU总中断
+    InitPieCtrl();                        // 关闭所有PIE模块的中断，清除所有PIE中断标志位
+    IER = 0x0000;                         // 禁用CPU中断并清除中断标志
+    IFR = 0x0000;
+    InitPieVectTable();                   // 初始化中断向量表
+
+//    MemCopy(&RamfuncsLoadStart,&RamfuncsLoadEnd,&RamfuncsRunStart);
+//    InitFlash();
+
+//    EALLOW;
+//    PieVectTable.ADCINT = &adc_isr;       // 将程序中需要的中断映射到中断向量表
+//    EDIS;
+
     //Step 6. 循环等待中断
     for(; ;)
     {
