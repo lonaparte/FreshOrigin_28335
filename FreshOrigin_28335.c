@@ -2,8 +2,9 @@
 //
 // FILE:   FreshOrigin_28335.c
 //
-// TITLE:  The main file of a project to import all linked CCS libraries
+// TITLE:  Main file of a project to import all linked CCS libraries
 //
+// The project is to control an inverter.
 //###########################################################################
 // $TI Release: F2833x Support Library v2.02.00.00 $
 // $Release Date: Fri Feb 12 19:15:21 IST 2021 $
