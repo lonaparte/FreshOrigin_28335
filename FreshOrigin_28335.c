@@ -167,9 +167,9 @@ void main()
 //    MemCopy(&RamfuncsLoadStart,&RamfuncsLoadEnd,&RamfuncsRunStart);
 //    InitFlash();
 
-//    EALLOW;
-//    PieVectTable.ADCINT = &adc_isr;       // 将程序中需要的中断映射到中断向量表
-//    EDIS;
+    EALLOW;
+    PieVectTable.ADCINT = &adc_isr;       // 将程序中需要的中断映射到中断向量表
+    EDIS;
 
     //Step 6. 循环等待中断
     for(; ;)
@@ -179,5 +179,106 @@ void main()
 
         asm("          NOP");
     }
+
+}
+
+//#pragma CODE_SECTION(adc_isr, "ramfuncs");
+interrupt void  adc_isr(void)
+{
+    I1a_AD = AdcRegs.ADCRESULT1 >> 4;         // 读取AD转换结果  B0
+    I1b_AD = AdcRegs.ADCRESULT3 >> 4;         //读取电流              B1
+    I1c_AD = AdcRegs.ADCRESULT5 >> 4;         //读取电流              B2
+
+    AdcRegs.ADCTRL2.bit.RST_SEQ1 = 1;          //立即复位到欲触发
+
+    I1a = (I1a_AD-2266)*0.0113924 ;             //
+    I1b = (I1b_AD-2266)*0.0113924 ;              //
+    I1c = (I1c_AD-2252)*0.0113924 ;
+
+//    U1_result[Phase_index] = I1a ;//Vm_pre1; //Vm;//储存锁相环输出的锁相信号
+//
+//    Phase_index = Phase_index + 1;
+//    if(Phase_index > (int)(WATCH_LEN-1))
+//    {Phase_index=0;}
+//
+////  调开环逆变时用
+//    spwm_count++;
+//    if(spwm_count>=Points_sina)
+//    {
+//        spwm_count=0;
+//    }
+//
+//
+//    theta=2*3.1416*spwm_count/Points_sina;
+//
+//    id=0.6667*(cos(theta)*I1a+cos(theta+4.1888)*I1b+cos(theta+2.0944)*I1c);
+//   // id=cos(theta);
+//    iq=0.6667*(sin(theta)*I1a+sin(theta+4.1888)*I1b+sin(theta+2.0944)*I1c);
+//   // i0=1/3*(I1a+I1b+I1c);
+//
+//    ek_id=id_ref-id;
+//    Vc_d += Kp_d*(ek_id-ek_idpre) + Ki_d*Tsam* ek_id*Kw_d; // 计算控制电压
+//    ek_idpre = ek_id;
+//
+//    ek_iq=iq_ref-iq;
+//    Vc_q += Kp_q*(ek_iq-ek_iqpre) + Ki_q*Tsam* ek_iq*Kw_q; // 计算控制电压
+//    ek_iqpre = ek_iq;
+//
+//    if(Vc_d > Vc_Max)  {Vc_d = Vc_Max;            // 对电流调节器的输出进行限幅
+//    Kw_d=0;
+//    }
+//    else if(Vc_d < Vc_Min)  {Vc_d = Vc_Min;
+//    Kw_d=0;
+//    }
+//    else
+//    {
+//    Kw_d=1;
+//    }
+//
+//    if(Vc_q > Vc_Max)  {Vc_q = Vc_Max;            // 对电流调节器的输出进行限幅
+//    Kw_q=0;
+//    }
+//    else if(Vc_q < Vc_Min)  {Vc_q = Vc_Min;
+//    Kw_q=0;
+//    }
+//    else
+//    {
+//    Kw_q=1;
+//    }
+//
+//
+//
+//    Vc_phasea =cos(theta)*Vc_d + sin(theta)*Vc_q;
+//    Vc_phaseb =cos(theta-2.0944)*Vc_d + sin(theta-2.0944)*Vc_q;
+//    Vc_phasec =cos(theta+2.0944)*Vc_d + sin(theta+2.0944)*Vc_q;
+//
+//
+//
+//    {start_flag = 1;}
+//
+//    if (start_flag == 1)
+//    {
+//
+//        Vm_InvertA = (1.0 + Vc_phasea)/2.0;
+//        Vm_InvertB = (1.0 + Vc_phaseb)/2.0;
+//        Vm_InvertC = (1.0 + Vc_phasec)/2.0;
+//
+//        if(Vm_InvertA  > 0.95)  Vm_InvertA = 0.95;    // 对电流调节器的输出进行限幅
+//        else if( Vm_InvertA < 0.05)  Vm_InvertA = 0.05;
+//        if(Vm_InvertB  > 0.95)  Vm_InvertB = 0.95;    // 对电流调节器的输出进行限幅
+//        else if( Vm_InvertB < 0.05)  Vm_InvertB = 0.05;
+//        if(Vm_InvertC  > 0.95)  Vm_InvertC = 0.95;    // 对电流调节器的输出进行限幅
+//        else if( Vm_InvertC < 0.05)  Vm_InvertC = 0.05;
+//
+//        EPwm1Regs.CMPA.half.CMPA = (SP*Vm_InvertA); // 加载比较寄存器的值   A相对应epwm1AB
+//        EPwm2Regs.CMPA.half.CMPA = (SP*Vm_InvertB); // 加载比较寄存器的值   B相对应epwm2AB
+//        EPwm3Regs.CMPA.half.CMPA = (SP*Vm_InvertC); // 加载比较寄存器的值   C相对应epwm3AB
+//
+//    }
+//    // Reinitialize for next ADC sequence
+//    AdcRegs.ADCTRL2.bit.RST_SEQ1 = 1;         // Reset SEQ1
+//    AdcRegs.ADCST.bit.INT_SEQ1_CLR = 1;       // Clear INT SEQ1 bit
+//    PieCtrlRegs.PIEACK.bit.ACK1 = 1;   // Acknowledge interrupt to PIE
+//    //  GpioDataRegs.GPACLEAR.bit.GPIO2=1;//设置GPIO输出低电平
 
 }
