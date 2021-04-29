@@ -192,6 +192,17 @@ void main()
         sinaC[spwm_count]=(float)(M*sin(2.0*3.1416*(float)spwm_count/Points_sina+2.0944));
     }
 
+    //Step 5. 使能中断2
+    IER |= M_INT1;                        // 使能CPU中断：ADCINT在第1组中断
+    PieCtrlRegs.PIEIER1.bit.INTx6 = 1;    // 使能PIE中断：ADCINT是PIE第1组的第6个中断
+    EINT;                                 // 使能总中断 INTM
+    ERTM;
+
+    EPwm1Regs.CMPA.half.CMPA =sinaA[0];
+    EPwm2Regs.CMPA.half.CMPA =sinaB[0];
+    EPwm3Regs.CMPA.half.CMPA =sinaC[0];
+    EPwm4Regs.CMPA.half.CMPA =0;
+
     //Step 6. 循环等待中断
     for(; ;)
     {
