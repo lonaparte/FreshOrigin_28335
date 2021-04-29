@@ -170,6 +170,28 @@ void main()
     PieVectTable.ADCINT = &adc_isr;       // 将程序中需要的中断映射到中断向量表
     EDIS;
 
+    //Step 4. 初始化外设
+
+    InitAdc();                            // 初始化ADC模块(使能ADC时钟，校验ADC，并给ADC上电)
+    Setup_Adc();                          // 配置ADC模块
+    Setup_ePWM1();                        // 配置ePWM1模块
+    Setup_ePWM2();                        // 配置ePWM2模块
+    Setup_ePWM3();                        // 配置ePWM3模块
+    Setup_ePWM4();                        // 配置ePWM4模块用于触发adc，单纯计时
+    EPwm3Regs.TBCTR = 0;                  // 计数器同时清零
+    EPwm2Regs.TBCTR = 0;
+    EPwm4Regs.TBCTR = 0;
+
+
+    //开环
+    //生成spwm表
+    for(spwm_count=0;spwm_count<Points_sina;spwm_count++)
+    {
+        sinaA[spwm_count]=(float)(M*sin(2.0*3.1416*(float)spwm_count/Points_sina));//(float)SP*(1.0+0.8*sin(2.0*3.1416*(float)spwm_count/1000.0))/2.0;
+        sinaB[spwm_count]=(float)(M*sin(2.0*3.1416*(float)spwm_count/Points_sina+4.1888));
+        sinaC[spwm_count]=(float)(M*sin(2.0*3.1416*(float)spwm_count/Points_sina+2.0944));
+    }
+
     //Step 6. 循环等待中断
     for(; ;)
     {
