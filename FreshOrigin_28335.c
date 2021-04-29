@@ -147,7 +147,15 @@ void main()
 
 {
 
+    //Step 1. 初始化系统控制
+    InitSysCtrl();//系统时钟初始化，默认已开启F28335所有外设时钟
 
+
+
+    //Step 2. 初始化GPIO
+    InitEPwm1Gpio();                      // 将 GPIO0 和 GPIO1 配置为ePWM功能
+    InitEPwm2Gpio();                     // 将GPIO2 和GPIO3配置为ePWM功能
+    InitEPwm3Gpio();                      // 将GPIO4 和GPIO5 配置为ePWM功能，仅触发采样
 
     //Step 6. 循环等待中断
     for(; ;)
