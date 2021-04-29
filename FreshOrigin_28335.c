@@ -215,7 +215,13 @@ void main()
 
 }
 
-#pragma CODE_SECTION(adc_isr, "ramfuncs");
+#ifdef __TI_COMPILER_VERSION__
+   #if __TI_COMPILER_VERSION__ >= 15009000
+      #pragma CODE_SECTION(adc_isr, ".TI.ramfunc");
+   #else
+      #pragma CODE_SECTION(adc_isr, "ramfuncs");
+   #endif
+#endif
 interrupt void  adc_isr(void)
 {
     I1a_AD = AdcRegs.ADCRESULT1 >> 4;         // 读取AD转换结果  B0
