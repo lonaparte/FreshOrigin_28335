@@ -214,7 +214,7 @@ void main()
 
 }
 
-//#pragma CODE_SECTION(adc_isr, "ramfuncs");
+#pragma CODE_SECTION(adc_isr, "ramfuncs");
 interrupt void  adc_isr(void)
 {
     I1a_AD = AdcRegs.ADCRESULT1 >> 4;         // 读取AD转换结果  B0
