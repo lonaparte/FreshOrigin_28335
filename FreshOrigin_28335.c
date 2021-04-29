@@ -110,7 +110,6 @@ float  Vm_InvertC = 0;                          // 实际调制波
 int    start_flag = 0;                // 启动标志，为1表示装置正常运行
 int    protect_flag = 0;              // 保护标志，为1表示已启动保护
 
-
 #define  PWM_CLK_FRQ  20e3                //
 // pll variables
 /*******************************************************************************
@@ -164,8 +163,8 @@ void main()
     IFR = 0x0000;
     InitPieVectTable();                   // 初始化中断向量表
 
-//    MemCopy(&RamfuncsLoadStart,&RamfuncsLoadEnd,&RamfuncsRunStart);
-//    InitFlash();
+    MemCopy(&RamfuncsLoadStart,&RamfuncsLoadEnd,&RamfuncsRunStart);
+    InitFlash();
 
     EALLOW;
     PieVectTable.ADCINT = &adc_isr;       // 将程序中需要的中断映射到中断向量表

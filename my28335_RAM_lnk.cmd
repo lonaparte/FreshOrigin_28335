@@ -89,6 +89,13 @@ PAGE 0 :
    RAML1      : origin = 0x009000, length = 0x001000
    RAML2      : origin = 0x00A000, length = 0x001000
    RAML3      : origin = 0x00B000, length = 0x001000
+   FLASHH     : origin = 0x300000, length = 0x008000     /* on-chip FLASH */
+   FLASHG     : origin = 0x308000, length = 0x008000     /* on-chip FLASH */
+   FLASHF     : origin = 0x310000, length = 0x008000     /* on-chip FLASH */
+   FLASHE     : origin = 0x318000, length = 0x008000     /* on-chip FLASH */
+   FLASHD     : origin = 0x320000, length = 0x008000     /* on-chip FLASH */
+   FLASHC     : origin = 0x328000, length = 0x008000     /* on-chip FLASH */
+   FLASHA     : origin = 0x338000, length = 0x007F80     /* on-chip FLASH */
    ZONE7A     : origin = 0x200000, length = 0x00FC00    /* XINTF zone 7 - program space */
    CSM_RSVD   : origin = 0x33FF80, length = 0x000076     /* Part of FLASHA.  Program with all 0x0000 when CSM is in use. */
    CSM_PWL    : origin = 0x33FFF8, length = 0x000008     /* Part of FLASHA.  CSM password locations in FLASHA            */
@@ -121,14 +128,33 @@ SECTIONS
       The codestart section (found in DSP28_CodeStartBranch.asm)
       re-directs execution to the start of user code.  */
    codestart        : > BEGIN,     PAGE = 0
-   
+/*
 #ifdef __TI_COMPILER_VERSION__
    #if __TI_COMPILER_VERSION__ >= 15009000
     .TI.ramfunc : {} > RAML0,      PAGE = 0
    #else
-   ramfuncs         : > RAML0,     PAGE = 0   
+   ramfuncs         : > RAML0,     PAGE = 0
    #endif
-#endif    
+#endif
+*/
+
+#ifdef __TI_COMPILER_VERSION__
+   #if __TI_COMPILER_VERSION__ >= 15009000
+    .TI.ramfunc : {} LOAD = FLASHD,
+                     RUN = RAML0,
+                     LOAD_START(_RamfuncsLoadStart),
+                     LOAD_END(_RamfuncsLoadEnd),
+                     RUN_START(_RamfuncsRunStart),
+                     PAGE = 0
+   #else
+   ramfuncs         : LOAD = FLASHD,
+                     RUN = RAML0,
+                     LOAD_START(_RamfuncsLoadStart),
+                     LOAD_END(_RamfuncsLoadEnd),
+                     RUN_START(_RamfuncsRunStart),
+                     PAGE = 0
+   #endif
+#endif
    
    .text            : > RAML1,     PAGE = 0
    .cinit           : > RAML0,     PAGE = 0
