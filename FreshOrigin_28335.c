@@ -1,14 +1,24 @@
-//###########################################################################
-//
-// FILE:   FreshOrigin_28335.c
-//
-// TITLE:  Main file of a project to import all linked CCS libraries
-//
-// The project is to control an inverter.
-//###########################################################################
+/*---------------------------------------------------------
+*               Copyright (c) 2021, Li CHENG
+*                   All right reserved.
+
+*ProjectName:  FreshOrigin_28335
+*Author:       Li CHENG, Wei CHEN, Xiujin YIN
+*Create Date:  2021-04-29
+*Description:  A project to import all linked CCS libraries
+               to Control an inverter.
+
+************************************************************
+*Modify Date:
+*Contents:
+************************************************************
+
+-----------------------------------------------------------*/
+
+//###########################################################
 // $TI Release: F2833x Support Library v2.02.00.00 $
 // $Release Date: Fri Feb 12 19:15:21 IST 2021 $
-//###########################################################################
+//###########################################################
 
 #include "DSP2833x_Device.h"     // DSP2833x Headerfile Include File
 #include "DSP2833x_Examples.h"   // DSP2833x Examples Include File
